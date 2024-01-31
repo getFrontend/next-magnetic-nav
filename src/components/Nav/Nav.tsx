@@ -22,6 +22,19 @@ export default function Nav() {
   const pathname = usePathname();
   const MotionLink = motion(Link);
 
+  const mapRange = (
+    inputLower: number,
+    inputUpper: number,
+    outputLower: number,
+    outputUpper: number
+  ) => {
+    const INPUT_RANGE = inputUpper - inputLower
+    const OUTPUT_RANGE = outputUpper - outputLower
+
+    return (value: number) =>
+      outputLower + (((value - inputLower) / INPUT_RANGE) * OUTPUT_RANGE || 0)
+  }
+
   return (
     <nav className="p-8">
       <ul className="flex gap-12 justify-center">
@@ -30,7 +43,7 @@ export default function Nav() {
             <motion.li key={link.path}>
               <MotionLink
                 className={cn(
-                  "font-medium rounded-lg text-sm py-2 px-4 transition-all duration-500 ease-out hover:bg-slate-200",
+                  "font-medium rounded-lg text-xl py-4 px-8 uppercase transition-all duration-500 ease-out hover:bg-slate-200",
                   pathname === link.path ? "bg-slate-300" : ""
                 )} href={link.path}
               >
