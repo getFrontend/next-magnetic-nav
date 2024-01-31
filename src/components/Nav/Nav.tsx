@@ -23,7 +23,7 @@ export default function Nav() {
         {links.map(link => {
           return (
             <li key={link.path}>
-              <Link href={link.path}>
+              <Link className="font-medium text-sm py-2 px-4 transition-all duration-500 ease-out hover:bg-slate-200" href={link.path}>
                 <span>{link.name}</span>
               </Link>
             </li>
