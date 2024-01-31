@@ -2,7 +2,7 @@
 import { cn } from "@/lib/utils";
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { motion } from "framer-motion"
+import { MotionValue, motion, useMotionValue, useTransform } from "framer-motion"
 
 export default function Nav() {
   const links = [
@@ -35,12 +35,36 @@ export default function Nav() {
       outputLower + (((value - inputLower) / INPUT_RANGE) * OUTPUT_RANGE || 0)
   }
 
+  const setTransform = (
+    item: HTMLElement & EventTarget,
+    event: React.PointerEvent,
+    x: MotionValue,
+    y: MotionValue
+  ) => {
+    const bounds = item.getBoundingClientRect();
+    const relativeX = event.clientX - bounds.left
+    const relativeY = event.clientY - bounds.top
+    const xRange = mapRange(0, bounds.width, -1, 1)(relativeX)
+    const yRange = mapRange(0, bounds.height, -1, 1)(relativeY)
+    x.set(xRange * 10)
+    y.set(yRange * 10)
+  }
+
   return (
     <nav className="p-8">
       <ul className="flex gap-12 justify-center">
         {links.map(link => {
+          const x = useMotionValue(0);
+          const y = useMotionValue(0);
+          const textX = useTransform(x, (latest) => latest * 0.5)
+          const textY = useTransform(y, (latest) => latest * 0.5)
           return (
-            <motion.li key={link.path}>
+            <motion.li
+              onPointerMove={(event) => {
+                const item = event.currentTarget;
+                setTransform(item, event, x, y)
+              }}
+              key={link.path}>
               <MotionLink
                 className={cn(
                   "font-medium rounded-lg text-xl py-4 px-8 uppercase transition-all duration-500 ease-out hover:bg-slate-200",
