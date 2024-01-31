@@ -2,7 +2,7 @@
 import { cn } from "@/lib/utils";
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { MotionValue, motion, useMotionValue, useTransform } from "framer-motion"
+import { AnimatePresence, MotionValue, motion, useMotionValue, useTransform } from "framer-motion"
 
 export default function Nav() {
   const links = [
@@ -51,31 +51,51 @@ export default function Nav() {
   }
 
   return (
-    <nav className="p-8">
+    <nav className="p-12">
       <ul className="flex gap-12 justify-center">
-        {links.map(link => {
-          const x = useMotionValue(0);
-          const y = useMotionValue(0);
-          const textX = useTransform(x, (latest) => latest * 0.5)
-          const textY = useTransform(y, (latest) => latest * 0.5)
-          return (
-            <motion.li
-              onPointerMove={(event) => {
-                const item = event.currentTarget;
-                setTransform(item, event, x, y)
-              }}
-              key={link.path}>
-              <MotionLink
-                className={cn(
-                  "font-medium rounded-lg text-xl py-4 px-8 uppercase transition-all duration-500 ease-out hover:bg-slate-200",
-                  pathname === link.path ? "bg-slate-300" : ""
-                )} href={link.path}
+        <AnimatePresence>
+          {links.map(link => {
+            const x = useMotionValue(0);
+            const y = useMotionValue(0);
+            const textX = useTransform(x, (latest) => latest * 0.5)
+            const textY = useTransform(y, (latest) => latest * 0.5)
+            return (
+              <motion.li
+                onPointerMove={(event) => {
+                  const item = event.currentTarget;
+                  setTransform(item, event, x, y)
+                }}
+                key={link.path}
+                onPointerLeave={(event) => {
+                  x.set(0);
+                  y.set(0);
+                }}
+                style={{ x, y }}
               >
-                <motion.span>{link.name}</motion.span>
-              </MotionLink>
-            </motion.li>
-          )
-        })}
+                <MotionLink
+                  className={cn(
+                    "relative font-medium rounded-lg text-sm py-4 px-8 uppercase transition-all duration-500 ease-out hover:bg-slate-200",
+                    pathname === link.path ? "bg-slate-300" : ""
+                  )} href={link.path}
+                >
+                  <motion.span
+                    style={{ x: textX, y: textY }}
+                    className="z-10 relative"
+                  >
+                    {link.name}
+                  </motion.span>
+                  {pathname === link.path ? (
+                    <motion.div
+                      transition={{ type: "spring" }}
+                      layoutId="underline"
+                      className="absolute w-full h-full rounded-md left-0 bottom-0 bg-blue-300"
+                    ></motion.div>
+                  ) : null}
+                </MotionLink>
+              </motion.li>
+            )
+          })}
+        </AnimatePresence>
       </ul>
     </nav>
   )
