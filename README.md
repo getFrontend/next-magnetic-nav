@@ -1,3 +1,9 @@
+# About
+
+Magnetic navigation link animation effect with Next.js 14 & Framer Motion and Tailwind.
+
+<img src="https://github.com/getFrontend/next-magnetic-nav/blob/main/public/next-magnetic-nav-sample.gif"/>
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
